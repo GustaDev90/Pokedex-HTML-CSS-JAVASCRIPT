@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="icon" href="img/pokemon icon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: medium;
+        }
+        main {
+            display: inline-block;
+            margin-top: 2%;
+            padding: 15px;
+            position: relative;
+        }
+        body {
+            min-height: 100vh;
+            text-align: center;
+            background-color: rgb(238, 255, 0);
+        }
+        .pokedex {
+            width: 100%;
+            padding: 15px;
+            max-width: 425px;
+        }
+        .pokedex_image {
+            position: absolute;
+            left: 50%;
+            bottom: 55%;
+            width: 20%;
+            transform: translateX(-63%);
+        }
+        .pokemon_data {
+            color: #aaa;
+            position: absolute;
+            top: 53%;
+            margin-left: 28%;
+        }
+        .pokemon_name {
+            color: rgb(46, 38, 38);
+            text-transform: uppercase;
+        }
+        .article {
+            position: absolute;
+            width: 65%;
+            margin-top: -50%;
+            margin-left: 10%;
+        }
+        .input_search {
+            width: 100%;
+            padding: 5%;
+            outline: none;
+            border: 2px solid black;
+            color: black;
+            border-radius: 5px;
+            font-size: large;
+            margin-top: 55px;
+        }
+        .button-container {
+            position: absolute;
+            margin-top: -25%;
+            display: flex;
+            width: 65%;
+            margin-left: 10%;
+            gap: 20px;
+        }
+        button {
+            width: 50%;
+            cursor: pointer;
+            padding: 4%;
+            border: 2px solid black;
+            border-radius: 5px;
+            font-size: large;
+            color: rgb(255, 255, 255);
+            background-color: black;
+        }
+        .button:active {
+            background-color: red;
+        }
+        nav img {
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+     <nav> 
+        <img src="img/" alt="">
+          <img src="img/pokemon logo.png" alt="">
+     </nav>
+    <main>
+        <img src="img/pokedex-removebg-preview.png" alt="pokedex" class="pokedex">
+        <img src="#" alt="" class="pokedex_image">
+        <h1 class="pokemon_data">
+            <span class="pokemon_number"></span> -
+            <span class="pokemon_name">Digite nome ou numero </span>
+        </h1>
+        <article class="article">
+            <input type="search" class="input_search" placeholder="Name or Number" required>
+        </article>
+        <div class="button-container">
+        </div>
+    </main>
+    <script>
+        const pokemon_name = document.querySelector(".pokemon_name");
+        const pokemon_number = document.querySelector(".pokemon_number");
+        const pokedex_image = document.querySelector(".pokedex_image");
+        const article = document.querySelector(".article");
+        const input = document.querySelector(".input_search");
+
+        const fetchPokemon = async (pokemon) => {
+            try {
+                const APIResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.toLowerCase()}`);
+                if (!APIResponse.ok) {
+                    throw new Error(`Pokemon not found: ${APIResponse.status}`);
+                }
+                const data = await APIResponse.json();
+                return data;
+            } catch (error) {
+                console.error("Error fetching Pokemon data:", error);
+                return null;
+            }
+        }
+
+        const renderPokemon = async (pokemon) => {
+            const data = await fetchPokemon(pokemon);
+
+            if (data) {
+                pokemon_name.textContent = data.name;
+                pokemon_number.textContent = data.id;
+                pokedex_image.src = data.sprites.versions['generation-v']['black-white'].animated.front_default;
+            } else {
+                pokemon_name.textContent = "Not found";
+                pokemon_number.textContent = "";
+                pokedex_image.src = "";
+            }
+        }
+
+        input.addEventListener("keydown", (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                renderPokemon(input.value);
+            }
+        });
+            window.alert ("Bem vindo a Pokedex!")
+    </script>
+</body>
+</html>
